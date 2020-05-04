@@ -5,6 +5,6 @@ jQuery(document).ready(function($){
     
     
     // Reihenfolge von Elementen beliebig anpassen
-    $(".PageProduct-emailSeller").insertAfter("MTabs-content");
+    $(".PageProduct-emailSeller").insertAfter(".PageProduct-details");
     
   });
