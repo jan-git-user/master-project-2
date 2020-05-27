@@ -1,0 +1,17 @@
+<script>
+    // Jan Hillenbrand
+    // Dieses Plugin dient der nachträglichen Gestaltung der Webseite 
+    
+    if (window.location.href.indexOf("/a/") > 0) {
+        console.log("MP_Custom_Plugin wird ausgeführt.");
+    
+        // Produktbeschreibung ausklappen
+        $(".MRevealText").addClass("is-revealed");
+        $(".MAccordionContent").css("height","auto");
+    
+        // Reihenfolge der Anzeige ändern
+        $(".PageProduct-sidebarGroup").insertAfter(".PageProduct-details");
+    }else {
+        console.log("MP_Custom_Plugin wird nicht ausgeführt.");
+  }
+</script> 
