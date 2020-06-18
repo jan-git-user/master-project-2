@@ -1,0 +1,11 @@
+<script>
+  (function() {
+    var pageviewCount = getCookie("pageviewCount");
+    if (typeof pageviewCount === "undefined") {
+      pageviewCount = 1;
+    } else {
+      pageviewCount++;
+    }</pre>
+    setPersistentCookie("pageviewCount", pageviewCount, 30);
+  })();
+</script>
