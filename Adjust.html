@@ -1,0 +1,56 @@
+<script>
+    //CreateSetup
+    // Konstanten festlegen durch Systemadministrator
+    const sections = ['.Layout--hero'];         // Klassennamen der variable Sektionen
+    const variationsCount = 5;                  // Anzahl der Variationen pro Sektion
+    const explorationRate = 1;                  // Inkrementell reduzuieren nach Auswertung von "Sessions"
+
+    // Initialisierung der Variablen
+    var setupID = [];
+    var sectionsCount = sections.length();
+    var decision = Math.random();
+
+    // Exploitation    
+    function Exploite(){
+        let Model = loadModel();                //2D-Array
+        let bestReward = 0;
+        let bestSetup;
+        
+        Model.forEach(function(ID){
+            if (Model[ID][1] > bestReward){     //noch zu optimieren
+                bestSetup = ID;
+                bestReward = Model[ID][1];
+            }
+        });
+        setupID = Array.from(bestSetup.toString()).map(Number);
+    }
+
+    // Exploration
+    function Explore() {
+        setupID = Array.from({length: sectionsCount}, () => Math.floor(Math.random() * (variationsCount-1)));
+        }
+    }
+    
+    // Modell von Datenbank Laden
+    function loadModel() {
+        
+    }
+
+    function CreateSetup() {    
+        // Variable Sektionen verbergen
+        sections.forEach(function(value){
+            $(value).hide();
+        });
+
+        // Entscheidung zwischen Exploration und Exploitation
+        if (decision > explorationRate) {
+            setupID = Exploite();
+        }else{
+            setupID = Explore(sectionsCount, variationsCount);
+        }
+        setupID.forEach(function(value, index){
+            $(sections[index]).eq(value).show();
+        });
+        
+}
+</script>
