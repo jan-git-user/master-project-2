@@ -1,56 +1,71 @@
-<script>
-    //CreateSetup
+<script> 
     // Konstanten festlegen durch Systemadministrator
-    const sections = ['.Layout--hero'];         // Klassennamen der variable Sektionen
-    const variationsCount = 5;                  // Anzahl der Variationen pro Sektion
-    const explorationRate = 1;                  // Inkrementell reduzuieren nach Auswertung von "Sessions"
+    var sections = ['.ContentBlock--HeroSearch'];          // Klassennamen der variable Sektionen
+    var variationsCount = 1;                               // Anzahl der Variationen pro Sektion
+    var explorationRate = 1;                           // Inkrementell reduzuieren nach Auswertung von "Sessions"
 
     // Initialisierung der Variablen
     var setupID = [];
-    var sectionsCount = sections.length();
+    var sectionsCount = sections.length;
     var decision = Math.random();
-
+    
+    function main(){
+        // Variable Sektionen verbergen
+        sections.forEach(function(value){
+            $(value).hide();
+        });
+        chooseSetup();
+        console.log(setupID);
+        setupID.forEach(function(value, index){
+            $(sections[index]).eq(value).show();
+        });
+    }
+    
+    //Exploration
+    function explore() {
+        for (i=0; i<sectionsCount; i++){
+            var x = Math.round(Math.random()*(variationsCount-1));
+            setupID.push(x);
+        }
+        return setupID;
+    }
+    
     // Exploitation    
-    function Exploite(){
-        let Model = loadModel();                //2D-Array
-        let bestReward = 0;
-        let bestSetup;
-        
+    function exploite(){
+        var Model = loadModel();                //2D-Array
+        var bestReward = 0;
+        var bestSetup;
+
         Model.forEach(function(ID){
-            if (Model[ID][1] > bestReward){     //noch zu optimieren
+            if (Model[ID][1] > bestReward){     //noch zu optimieren und an Datenbank anzupassen
                 bestSetup = ID;
                 bestReward = Model[ID][1];
             }
         });
         setupID = Array.from(bestSetup.toString()).map(Number);
+        return setupID;
     }
-
-    // Exploration
-    function Explore() {
-        setupID = Array.from({length: sectionsCount}, () => Math.floor(Math.random() * (variationsCount-1)));
+    
+    // Load model from data bank
+    function loadModel() {} 
+    
+    // Record Session
+    function record(){}
+    
+    //Choose Setup -- Eploitation or Exploration
+    function chooseSetup() {
+        if (decision > explorationRate) {
+            setupID = exploite();
+        }else{
+            setupID = explore();
         }
     }
     
-    // Modell von Datenbank Laden
-    function loadModel() {
-        
-    }
-
-    function CreateSetup() {    
-        // Variable Sektionen verbergen
-        sections.forEach(function(value){
-            $(value).hide();
-        });
-
-        // Entscheidung zwischen Exploration und Exploitation
-        if (decision > explorationRate) {
-            setupID = Exploite();
-        }else{
-            setupID = Explore(sectionsCount, variationsCount);
-        }
-        setupID.forEach(function(value, index){
-            $(sections[index]).eq(value).show();
-        });
-        
-}
+    //Start
+    if (window.location.href == 'https://www.parloo.de/'){          //Testpage: 'https://parloo.staging.marketplacer.com/promo/homepage-entwurf?preview=true'
+        main();                                                     //Homepage: 'https://www.parloo.de/'
+        console.log('Adjust_Plugin wurde ausgeführt.');
+    }else{
+        console.log('Adjust_Plugin wurde nicht ausgeführt.');
+    }    
 </script>
