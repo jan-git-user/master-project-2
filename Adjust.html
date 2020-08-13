@@ -1,0 +1,142 @@
+<script> 
+    // parameters for Adjust
+    const sections = ['.ContentBlock--HeroSearch'];          // class name of variable sections
+    const variationsCount = 1;
+    
+    // hyperparameters for ML concept
+    const explorationRate = 1;                          
+    
+    // parameters for Record
+    const minDuration   = 2000.0;    
+    
+    // Initalize variables
+    var setupID             = [];
+    var setupIDValue        = 0;
+    var sectionsCount       = sections.length;
+    var decision            = Math.random();
+    var session             = {};
+    var sessionStart        = 0;
+    var sessionDuration     = 0;
+    
+    var sessionScroll       = 0;  
+    var clickElement        = 0;
+    var clickHeroSearch     = 0;
+    
+    //Start here
+    if (window.location.href == 'https://www.parloo.de/'){          //Testpage: 'https://parloo.staging.marketplacer.com/promo/homepage-entwurf?preview=true'
+        main();                                                     //Homepage: 'https://www.parloo.de/'
+        console.log('Adjust_Plugin wurde ausgeführt.');
+    }else{
+        console.log('Adjust_Plugin wurde nicht ausgeführt.');
+    } 
+    
+-----------------------------------------------------------------------------    
+    //Record session with EventListener
+    
+    // Session start
+    $(document).on('load', function(){
+        sessionStart = Date.now();
+    });
+
+    // Scrollbehaviour
+    $(document).scroll(function(){
+        sessionScroll += 1;
+        console.log('Scrolling: ', sessionScroll);
+    });
+
+    // Session over
+    $(window).on('beforeunload', function(){
+        // detect bounce
+        sessionDuration = Date.now() - sessionStart;
+        if (minDuration > sessionDuration){
+            if(clickElement == 0 && clickHeroSearch == 0 && sessionScroll == 0){
+                bounce = 1;                     
+            }
+        }        
+    saveSession();                                         
+    }
+
+    // Eventlistener for relevant Clicks
+    $('.SummaryList-item').click(function(){
+        clickElement = 1;
+    });
+    $('.HeroSlide-shimWrapper').click(function(){
+        clickElement = 1;
+    });
+    $('.tns-item').click(function(){
+        clickElement = 1;
+    });
+    $('.MainSearchField').click(function(){
+        clickHeroSearch = 1;
+    });
+    $('.MainSearch-buttonWrapper').click(function(){
+        clickHeroSearch = 1;
+    });
+-------------------------------------------------------------------------------------    
+    // Adjust design of homepage
+    
+    function main(){
+        // Hide variable sections
+        sections.forEach(function(value){
+            $(value).hide();
+        });
+        // Exploration vs. Exploitation => SetupID
+        chooseSetup();
+        console.log(setupID);
+        // 
+        setupID.forEach(function(value, index){
+            $(sections[index]).eq(value).show();
+            setupIDValue += value * Math.pow(10, index); 
+        });
+        record();
+    }
+    
+    //Exploration
+    function explore() {
+        for (i=0; i<sectionsCount; i++){
+            var x = Math.round(Math.random()*(variationsCount-1));
+            setupID.push(x);
+        }
+        return setupID;
+    }
+    
+    // Exploitation    
+    function exploite(){
+        var Model = loadModel();                //2D-Array
+        var bestReward = 0;
+        var bestSetup;
+
+        Model.forEach(function(ID){
+            if (Model[ID][1] > bestReward){     //noch zu optimieren und an Datenbank anzupassen
+                bestSetup = ID;
+                bestReward = Model[ID][1];
+            }
+        });
+        setupID = Array.from(bestSetup.toString()).map(Number);
+        return setupID;
+    }
+     
+    //Choose Setup -- Eploitation or Exploration
+    function chooseSetup() {
+        if (decision > explorationRate) {
+            setupID = exploite();
+        }else{
+            setupID = explore();
+        }
+    }
+-------------------------------------------------------------------------------------------------------------------------    
+    //save Session for Evaluation
+    function saveSession(){
+        session['SETUP']            = setupIDValue;
+        session['DATE']             = Date();
+        session['BOUNCE']           = bounce;
+        session['CONVERSION1']      = clickHeroSearch;
+        session['CONVERSION2']      = clickElement;
+        session['SCROLLBEHAVIOUR']  = sessionScroll;
+    }
+    
+    // Load model from data bank
+    function loadModel() {} 
+    
+   
+</script>
