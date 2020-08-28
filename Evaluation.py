@@ -14,14 +14,15 @@ w4 = 1.0   # ItemClick
 w5 = 1.0   # ECommerceClick
 w6 = 0.25  # RandomClick
 
-Sessions = [];
-Model = [];
+# load Sessions and Model
+Sessions = []
+Model = []
 
 # Simulated test data
-Sessions = np.random.randint(2,size=(100,9));
-Sessions[:,0] = np.random.randint(5, size=100);
+Sessions = np.random.randint(2,size=(100,9))
+Sessions[:,0] = np.random.randint(5, size=100)
 Sessions[:,1] = 247
-Sessions[:,2] = np.random.randint(100000, size=100);
+Sessions[:,2] = np.random.randint(100000, size=100)
 Sessions[0,-6:] = 0
 Sessions[0,2] = 1000
 
