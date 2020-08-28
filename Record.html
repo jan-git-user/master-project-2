@@ -1,11 +1,56 @@
 <script>
-  (function() {
-    var pageviewCount = getCookie("pageviewCount");
-    if (typeof pageviewCount === "undefined") {
-      pageviewCount = 1;
-    } else {
-      pageviewCount++;
-    }</pre>
-    setPersistentCookie("pageviewCount", pageviewCount, 30);
-  })();
+    
+    var scrolling = 1;
+    var sessionStart = Date.now();
+    //var lastSession = JSON.parse(localStorage.getItem('SESSION'));
+    
+    var session = {
+        SessionSetup:       15,
+        SessionDate:        Date(),
+        SessionDuration:    0,
+        SearchFieldClick:   0,
+        SearchButtonClick:  0,
+        ScrollBehaviour:    0,
+        ItemClick:          0,
+        ECommerceClick:     0,
+        RandomClick:        0
+    };
+        
+    document.addEventListener('click',function(e){
+        //console.log(e.target.tagName);
+        if (e.target.tagName == 'INPUT') {
+            session['SearchFieldClick'] = 1;
+            console.log('click on search field');
+            console.log(session);
+        }else if (event.target.tagName == 'IMG' ) {
+            session['ItemClick'] = 1;
+            console.log('ItemClick');
+        }else {
+            switch (e.target.className) {
+                case 'btn btn-primary MainSearch-button':
+                    session['SearchButtonClick'] = 1;
+                    console.log('SearchButton click');
+                    break;
+                case 'btn btn-block btn-ecommerce':
+                    session['ECommerceClick'] = 1;
+                    console.log('E-Commerce Click');
+                    break;
+                default:
+                    session['RandomClick'] = 1;
+            }
+        }  
+    });
+    
+    document.addEventListener('scroll', function(){
+        scrolling +=1;
+        if (scrolling == 200) {
+            session['ScrollBehaviour'] = 1;
+            console.log('Enough scrolling for today!');
+        }
+    });
+    
+    window.addEventListener('beforeunload', function(){
+        session['SessionDuration'] = Date.now() - sessionStart;
+        window.localStorage.setItem('SESSION', JSON.stringify(session)); 
+    });
 </script>
